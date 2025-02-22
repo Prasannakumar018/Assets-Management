@@ -1,151 +1,86 @@
 <div class="container">
-  <form (ngSubmit)="addData()">
-  <div class="d-flex align-items-center justify-content-between mb-3">
-    <!-- Title -->
-    <h1>{{ title }}</h1>
+  <form (ngSubmit)="addAsset()">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <h1>{{ title }}</h1>
 
-    <!-- Search Bar -->
-    <div class="mb-3 mt-4">
-      <label for="search" class="form-label">Search Passwords</label>
-      <input 
-        type="text" 
-        class="form-control" 
-        id="search" 
-        [(ngModel)]="searchTerm" 
-        placeholder="Search by website name"
-      />
-      <Button class="btn btn-primary" (click)="filteredData()">Search</Button>
+      <div class="mb-3 mt-4">
+        <label for="search" class="form-label">Search Assets</label>
+        <input
+          type="text"
+          class="form-control"
+          id="search"
+          [(ngModel)]="searchTerm"
+          placeholder="Search by asset name"
+        />
+        <Button class="btn btn-primary" (click)="filteredData()">Search</Button>
+      </div>
     </div>
-  </div>
 
-    <!-- Entering new Website and password-->
-  
+    <!-- Entering new asset-->
     <div class="mb-3">
-      <label for="website" class="form-label">Website</label>
-      <input 
-      type="text" 
-      class="form-control" 
-      placeholder="Website" 
-      id="website" 
-      [(ngModel)]="newItem.website"  
-      [ngModelOptions]="{standalone: true}" 
-      aria-label="Recipient's username with two button addons">
-
+      <label for="assetName" class="form-label">Asset Name</label>
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Asset Name"
+        id="assetName"
+        [(ngModel)]="newAsset.name"
+        [ngModelOptions]="{ standalone: true }"
+        aria-label="Asset name"
+      />
     </div>
 
-    <label for="password" class="form-label">Password</label>
-    <div class="d-flex align-items-center mb-3">
-    <input 
-    [type]="newItem.passwordFieldType"  
-    class="form-control" 
-    placeholder="Password" 
-    id="password" 
-    [(ngModel)]="newItem.password"  
-    [ngModelOptions]="{standalone: true}" 
-    aria-label="Server">
-
-    <i 
-    class="bi px-2"
-    [ngClass]="{'bi-eye-slash':newItem.passwordFieldType === 'password', 'bi-eye': newItem.passwordFieldType === 'text'}"
-    (click)="togglPassword(newItem.passwordFieldType)">
-   </i>
-
+    <div class="mb-3">
+      <label for="assetValue" class="form-label">Asset Value</label>
+      <input
+        type="number"
+        class="form-control"
+        placeholder="Asset Value"
+        id="assetValue"
+        [(ngModel)]="newAsset.value"
+        [ngModelOptions]="{ standalone: true }"
+        aria-label="Asset value"
+      />
     </div>
-  
-    <button type="submit" class="btn btn-primary">Add</button>
+
+    <button type="submit" class="btn btn-primary">Add Asset</button>
   </form>
 
+  <!-- Pie Chart Canvas -->
+  <div>
+    <canvas id="canvas"></canvas>
+  </div>
 
-
-    <!-- Table to display passwords -->
+  <!-- Asset Table to display assets -->
   <table class="table table-hover table-bordered mt-4">
     <thead class="table">
       <tr>
-        <th>Website</th>
-        <th>Password</th>
+        <th>Asset Name</th>
+        <th>Asset Value</th>
         <th>Actions</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let item of data; let i = index">
+      <tr *ngFor="let asset of assets; let i = index">
+        <td>{{ asset.name }}</td>
+        <td>{{ asset.value }}</td>
         <td>
-          <input 
-            type="text" 
-            class="form-control" 
-            [(ngModel)]="item.website" 
-            [ngModelOptions]="{standalone: true}" 
-            readonly> 
-        </td>
-        <td>
-          <div class="d-flex align-items-center">
-            <input 
-              [type]="item.passwordFieldType"
-              class="form-control" 
-              [(ngModel)]="item.password" 
-              [ngModelOptions]="{standalone: true}" 
-              readonly> 
-            <i 
-              class="bi px-2"
-              [ngClass]="{'bi-eye-slash': item.passwordFieldType === 'password', 'bi-eye': item.passwordFieldType === 'text'}"
-              (click)="togglePassword(i)">
-            </i>
-          </div>
-        </td>
-        <td>
-          <button class="btn btn-warning btn-sm" type="button" (click)="updatePassword(i)">Update</button>
+          <button class="btn btn-warning btn-sm" type="button" (click)="updateAsset(i)">Update</button>
           <button class="btn btn-danger btn-sm" type="button" (click)="openDeleteModal(i)">Delete</button>
         </td>
       </tr>
     </tbody>
   </table>
 
-                                      <!-- Previous code -->
-
-  <!-- <div class="input-group mb-3 py-4 justify-content-center align-items-center" id="input-group">
-    <div *ngFor="let item of data; let i = index" class="input-group mb-3 py-4 justify-content-center align-items-center" id="input-group">
-    <input 
-      type="text" 
-      class="form-control" 
-      placeholder="Website" 
-      id="website" 
-      [(ngModel)]="item.website" 
-      [ngModelOptions]="{standalone: true}" 
-      aria-label="Recipient's username with two button addons"
-      readonly>
-    <input 
-    [type]="item.passwordFieldType"
-      class="form-control" 
-      placeholder="Password" 
-      id="password" 
-      [(ngModel)]="item.password" 
-      [ngModelOptions]="{standalone: true}" 
-      aria-label="Server"
-      readonly>
-    <i 
-      class="bi px-3"
-      [ngClass]="{'bi-eye-slash': item.passwordFieldType === 'password', 'bi-eye': item.passwordFieldType === 'text'}"
-      (click)="togglePassword(i)">
-    </i>
-    <button class="btn btn-warning" type="button" (click)="updatePassword(i)">Update</button>
-    <button class="btn btn-danger" type="button" (click)="openDeleteModal(i)">Delete</button>
-  </div>
-  </div>
-</div> -->
-
-
-<!-- Pop up for the delete confirm dialog-->
-
-<div *ngIf="isModalOpen" class="modal-backdrop">
-  <div class="modal-container">
-    <h4>Are you sure?</h4>
-    <p>Do you really want to delete this record? This action cannot be undone.</p>
-    <div class="modal-buttons">
-      <button class="btn btn-info" (click)="closeModal()">Cancel</button>
-      <button class="btn btn-danger" (click)="confirmDelete()">Delete</button>
+  <!-- Delete Confirmation Modal -->
+  <div *ngIf="isModalOpen" class="modal-backdrop">
+    <div class="modal-container">
+      <h4>Are you sure?</h4>
+      <p>Do you really want to delete this asset? This action cannot be undone.</p>
+      <div class="modal-buttons">
+        <button class="btn btn-info" (click)="closeModal()">Cancel</button>
+        <button class="btn btn-danger" (click)="confirmDelete()">Delete</button>
+      </div>
     </div>
   </div>
 </div>
-
-
-
-
